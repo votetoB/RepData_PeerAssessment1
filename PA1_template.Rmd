@@ -94,6 +94,7 @@ Let's devise our strategy for filling in all of the missing values in the datase
 
 
 ```{r}
+svi <- splited_by_interval
 splited_by_interval <- data.frame(splited_by_interval)
 for (i in 1:ncol(splited_by_interval)){
     if (is.na(splited_by_interval[1,i])){splited_by_interval[1,i] <- splited_by_interval[2, i]}
@@ -117,11 +118,8 @@ new_data <- activity_data
 Easy to find that  ```splited_by_interval[i, j]``` refers to ```activity_data[(i-1)*288 + j, 1]```:
 
 ```{r}
-## This is very slow, buy I don't know, how to replace it :-(
-for (i in 1:ncol(splited_by_interval)){
-    for (j in 1:nrow(splited_by_interval)){
-        new_data[(i-1) * 288 + j, 1] <- splited_by_interval[i, j]
-    }
+for (i in 1:61){
+    new_data[((i-1) * 288 + 1):(i * 288) , 1] <- unlist(splited_by_interval[i, ], use.names = F)
 }
 
 head(new_data)
@@ -153,7 +151,11 @@ head(new_data)
 Finally, we draw a panel plot containing interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis). 
 
 ```{r}
-library(lattice)
-plot(I(mean(steps)) ~ interval | weekend, data = new_data, layout(c(2,1)))
+par(mfrow = c(2,1))
+par(mar = c(3, 4, 1, 1))
+final_means <- tapply(new_data$steps, list(new_data$interval, new_data$weekend), mean)
+plot(final_means[1:288], type="l", xaxt = "n", ylab = "weekday")
+plot(final_means[289:(288*2)], type="l", xaxt = "n", ylab = "weekend")
+axis(1, at = seq(1:288), labels = labels)
 
 ```
