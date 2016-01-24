@@ -77,7 +77,7 @@ axis(1, at = seq(1:288), labels = labels)
 
 We also can find an interval with the biggest average of steps (that's easy):
 ```{r}
-max(mean_by_interval)
+names(which(mean_by_interval == max(mean_by_interval)))
 ```
 
 ## Imputing missing values
@@ -155,7 +155,7 @@ par(mfrow = c(2,1))
 par(mar = c(3, 4, 1, 1))
 final_means <- tapply(new_data$steps, list(new_data$interval, new_data$weekend), mean)
 plot(final_means[1:288], type="l", xaxt = "n", ylab = "weekday")
-plot(final_means[289:(288*2)], type="l", xaxt = "n", ylab = "weekend")
+plot(final_means[289:(288*2)], type="l", xaxt = "n", ylab = "average steps")
 axis(1, at = seq(1:288), labels = labels)
 
 ```
